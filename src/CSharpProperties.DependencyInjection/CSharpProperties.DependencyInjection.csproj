@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>MosaicoSolutions</Authors>
+    <Company>MosaicoSolutions</Company>
+    <Description>Dependency Injection for CSharpProperties</Description>
+    <Copyright>2018</Copyright>
+    <PackageProjectUrl>https://github.com/MosaicoSolutions/CSharpProperties.DependencyInjection</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MosaicoSolutions/CSharpProperties.DependencyInjection</RepositoryUrl>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+    <PackageReference Include="MosaicoSolutions.CSharpProperties" Version="4.0.0" />
+  </ItemGroup>
+</Project>
