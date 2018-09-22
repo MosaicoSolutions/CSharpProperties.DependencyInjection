@@ -1,0 +1,14 @@
+String=CSharpProperties.DependencyInjection
+Bool=true
+Byte=1
+SByte=-1
+Char=A
+Decimal=56.73
+Double=68.13
+Float=1.34
+Integer=-412
+UnsignedInteger=412
+Long=-312312
+UnsignedLong=312312
+Short=-741
+UShort=741
