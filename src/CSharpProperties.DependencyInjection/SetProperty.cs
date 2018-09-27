@@ -69,7 +69,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 } 
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -86,7 +86,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -103,7 +103,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -120,7 +120,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -137,7 +137,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -154,7 +154,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -171,7 +171,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -188,7 +188,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -205,7 +205,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -222,7 +222,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -239,7 +239,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -256,7 +256,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 
@@ -273,7 +273,7 @@ namespace CSharpProperties.DependencyInjection
                 {
                     property.SetValue(instance, result);
                 }
-                else if (property.PropertyType.IsNullableOfPrimitiveType())
+                else if (property.PropertyType.IsNullableOfAnyPrimitiveType())
                 {
                     property.SetValue(instance, null);
                 } 

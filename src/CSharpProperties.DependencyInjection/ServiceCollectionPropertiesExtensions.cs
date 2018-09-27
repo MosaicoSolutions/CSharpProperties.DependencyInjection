@@ -28,7 +28,7 @@ namespace CSharpProperties.DependencyInjection
 
         private static void AddProperties(this IServiceCollection services, Type type)
         {
-            if (type.HasDefaultConstructor())
+            if (type.HasDefaultOrOptionalConstructor())
                 services.ResolveProperties(type, () => Activator.CreateInstance(type));
             else
                 services.ResolveProperties(type);
@@ -103,7 +103,7 @@ namespace CSharpProperties.DependencyInjection
 
             foreach (var property in instance.GetType().GetProperties().Where(p => p.CanWrite &&
                                                                              (p.PropertyType.IsPrimitive || p.PropertyType == typeof(string)) ||
-                                                                             (p.PropertyType.IsNullableOfPrimitiveType())))
+                                                                             (p.PropertyType.IsNullableOfAnyPrimitiveType())))
             {
                 if (!propertiesKeys.Contains(property.Name, StringComparer.InvariantCultureIgnoreCase))
                     continue;
