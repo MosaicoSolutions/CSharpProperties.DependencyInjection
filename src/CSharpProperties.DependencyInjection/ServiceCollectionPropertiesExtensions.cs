@@ -12,7 +12,7 @@ namespace CSharpProperties.DependencyInjection
 {
     public static class ServiceCollectionPropertiesExtensions
     {
-        public static IServiceCollection AddProperties(this IServiceCollection services)
+        public static IServiceCollection AddPropertiesFiles(this IServiceCollection services)
         {
             var allTypes = AppDomain.CurrentDomain
                                     .GetAssemblies()
