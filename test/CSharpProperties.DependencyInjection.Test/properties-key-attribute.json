@@ -1,0 +1,11 @@
+[
+    {
+        "key": "database", "value": "inception"
+    },
+    {
+        "key": "host", "value": "localhost"
+    },
+    {
+        "key": "port", "value": "8080"
+    }
+]

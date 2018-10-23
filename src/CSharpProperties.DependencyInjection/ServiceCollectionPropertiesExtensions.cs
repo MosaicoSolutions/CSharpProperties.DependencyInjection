@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -61,17 +62,29 @@ namespace CSharpProperties.DependencyInjection
                                                                              (p.PropertyType.IsPrimitive || p.PropertyType == typeof(string)) ||
                                                                              (p.PropertyType.IsNullableOfAnyPrimitiveType())))
             {
-                if (!propertiesKeys.Contains(property.Name, StringComparer.InvariantCultureIgnoreCase))
-                    continue;
-
-                var key = propertiesKeys.FirstOrDefault(k => k.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
-
+                var key = ExtractKey(property, propertiesKeys);
+                
                 if (key is null)
                     continue;
 
                 var value = properties[key];
                 SetPropertyValueFromString(instance, property, value);
             }
+        }
+
+        private static string ExtractKey(PropertyInfo property, IEnumerable<string> propertiesKeys)
+        {
+            var keyName = property.IsDefined(typeof(PropertiesKeyAttribute), false)
+                            ? property.GetCustomAttributes(false)
+                                      .Where(a => a is PropertiesKeyAttribute)
+                                      .Cast<PropertiesKeyAttribute>()
+                                      .Select(a => a.Key)
+                                      .FirstOrDefault()
+                            : property.Name;
+
+            var key = propertiesKeys.FirstOrDefault(k => k.Equals(keyName, StringComparison.InvariantCultureIgnoreCase));
+
+            return key;
         }
 
         private static IProperties LoadPropertiesFromFile(string path)
