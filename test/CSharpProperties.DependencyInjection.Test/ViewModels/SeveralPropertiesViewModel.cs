@@ -2,7 +2,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 
 namespace CSharpProperties.DependencyInjection.Test.ViewModels
 {
-    [PropertiesFile(Path = @".\several-properties.txt")]
+    [PropertiesFile(Path = @".\properties-files\several-properties.txt")]
     public class SeveralPropertiesViewModel
     {
         public string String { get; set; }

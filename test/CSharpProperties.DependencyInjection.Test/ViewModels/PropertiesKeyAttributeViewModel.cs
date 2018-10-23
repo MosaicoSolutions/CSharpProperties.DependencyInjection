@@ -2,7 +2,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 
 namespace CSharpProperties.DependencyInjection.Test.ViewModels
 {
-    [PropertiesFile(Path = @".\properties-key-attribute.json")]
+    [PropertiesFile(Path = @".\properties-files\properties-key-attribute.json")]
     public class PropertiesKeyAttributeViewModel
     {
         [PropertiesKey(Key = "database")]

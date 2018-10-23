@@ -2,7 +2,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 
 namespace CSharpProperties.DependencyInjection.Test.ViewModels
 {
-    [PropertiesFile(Path = @".\several-properties-nullable.txt")]
+    [PropertiesFile(Path = @".\properties-files\several-properties-nullable.txt")]
     public class SeveralPropertiesNullableViewModel
     {
         public string String { get; set; }

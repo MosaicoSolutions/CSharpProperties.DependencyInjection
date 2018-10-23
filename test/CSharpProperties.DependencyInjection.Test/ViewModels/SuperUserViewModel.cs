@@ -3,7 +3,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 
 namespace CSharpProperties.DependencyInjection.Test.ViewModels
 {
-    [PropertiesFile(Path = @".\superuser.properties")]
+    [PropertiesFile(Path = @".\properties-files\superuser.properties")]
     public class SuperUserViewModel
     {
         public string Username { get; set; }
