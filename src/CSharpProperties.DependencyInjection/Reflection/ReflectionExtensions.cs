@@ -14,6 +14,13 @@ namespace CSharpProperties.DependencyInjection.Reflection
             return type.GetConstructors().All(c => !c.GetParameters().Any() || c.GetParameters().All(p => p.IsOptional));
         }
 
+        public static bool IsNullable(this Type type)
+        {
+            return type == null
+                    ? throw new ArgumentNullException(nameof(type))
+                    : type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
         public static bool IsNullableOfAnyPrimitiveType(this Type type)
         {
             if (type == null)

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 using CSharpProperties.DependencyInjection.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MosaicoSolutions.CSharpProperties;
+using static System.String;
 
 namespace CSharpProperties.DependencyInjection
 {
@@ -18,66 +20,20 @@ namespace CSharpProperties.DependencyInjection
                                     .GetAssemblies()
                                     .SelectMany(a => a.GetTypes()
                                                       .Where(t => t.IsClass &&
-                                                                  t.IsDefined(typeof(PropertiesFileAttribute), false)));
+                                                                  t.IsDefined(typeof(PropertiesFileAttribute), false) &&
+                                                                  t.HasDefaultOrOptionalConstructor()));
 
             foreach (var type in allTypes)
-                services.AddProperties(type);
+                services.ResolveProperties(type, () => Activator.CreateInstance(type));
 
             return services;
         }
 
-        private static void AddProperties(this IServiceCollection services, Type type)
-        {
-            if (type.HasDefaultOrOptionalConstructor())
-                services.ResolveProperties(type, () => Activator.CreateInstance(type));
-            else
-                services.ResolveProperties(type);
-        }
-
         private static void ResolveProperties(this IServiceCollection services, Type type, Func<object> newInstance)
         {
-            services.AddTransient(type, serviceProvider => 
+            services.AddScoped(type, serviceProvider => 
             {
                 var instance = newInstance();
-                LoadProperties(instance);
-                return instance;
-            });
-        }
-
-        private static void ResolveProperties(this IServiceCollection services, Type type)
-        {
-            services.AddTransient(type, serviceProvider =>
-            {
-                object instance = null;
-
-                foreach (var constructor in type.GetConstructors())
-                {
-                    var constructorParameters = constructor.GetParameters().Where(p => !p.IsOptional).ToArray();
-
-                    var parameters = new object[constructorParameters.Count()];
-
-                    for (var i = 0; i < constructorParameters.Length; i++)
-                    {
-                        var service = serviceProvider.GetService(constructorParameters[i].ParameterType);
-
-                        if (service is null)
-                            break;
-
-                        parameters[i] = service;
-                    }
-
-                    if (parameters.Any(p => p is null))
-                        continue;
-
-                    instance = Activator.CreateInstance(type, parameters);
-
-                    if (instance != null)
-                        break;
-                }
-
-                if (instance is null)
-                    throw new InvalidOperationException($"Cannot resolve service of type {type.Name}");
-
                 LoadProperties(instance);
                 return instance;
             });
@@ -114,7 +70,7 @@ namespace CSharpProperties.DependencyInjection
                     continue;
 
                 var value = properties[key];
-                SetProperty(instance, property, value);
+                SetPropertyValueFromString(instance, property, value);
             }
         }
 
@@ -131,12 +87,30 @@ namespace CSharpProperties.DependencyInjection
 
             return Properties.Load(path);
         }
-
-        private static void SetProperty(object instance, PropertyInfo property, string value)
+    
+        private static void SetPropertyValueFromString(object target, PropertyInfo property, string value)
         {
-            var propertySetter = PropertySetter.FromType(property.PropertyType);
+            if  (property.PropertyType == typeof(string))
+            {
+                property.SetValue(target, value);
+                return;
+            }
 
-            propertySetter(instance, property, value);
+            var propertyType = property.PropertyType;
+
+            if (propertyType.IsNullable())
+            {
+                if (IsNullOrEmpty(value))
+                {
+                    property.SetValue(target, null, null);
+                    return;
+                }
+
+                propertyType = new NullableConverter(property.PropertyType).UnderlyingType;
+            }
+
+            var convertedValue = Convert.ChangeType(value, propertyType);
+            property.SetValue(target, convertedValue, null);
         }
     }
 }
