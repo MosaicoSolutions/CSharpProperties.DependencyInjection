@@ -9,4 +9,5 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("CSharpProperties.DependencyInjection")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CSharpProperties.DependencyInjection")]
+[assembly: AssemblyKeyFileAttribute("CSharpProperties.DependencyInjectionKey.snk")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
