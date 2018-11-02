@@ -35,32 +35,35 @@ namespace CSharpProperties.DependencyInjection
             services.AddScoped(type, serviceProvider => 
             {
                 var instance = newInstance();
-                LoadProperties(instance);
+
+                var propertiesFileAttribute = instance.GetType()
+                                        .GetCustomAttributes(false)
+                                        .Where(a => a is PropertiesFileAttribute)
+                                        .Cast<PropertiesFileAttribute>()
+                                        .FirstOrDefault();
+
+                if (!File.Exists(propertiesFileAttribute.Path))
+                    throw new FileNotFoundException("Properties File not found.", propertiesFileAttribute.Path);
+
+                var properties = LoadPropertiesFromFile(propertiesFileAttribute.Path);
+
+                if (!properties.Any())
+                    return instance;
+
+                LoadProperties(instance, properties);
+                LoadFields(instance, properties);
                 return instance;
             });
         }
 
-        private static void LoadProperties(object instance)
+        private static void LoadProperties(object instance, IProperties properties)
         {
-            var propertiesFileAttribute = instance.GetType()
-                                                  .GetCustomAttributes(false)
-                                                  .Where(a => a is PropertiesFileAttribute)
-                                                  .Cast<PropertiesFileAttribute>()
-                                                  .FirstOrDefault();
-
-            if (!File.Exists(propertiesFileAttribute.Path))
-                throw new FileNotFoundException("Properties File not found.", propertiesFileAttribute.Path);
-
-            var properties = LoadPropertiesFromFile(propertiesFileAttribute.Path);
-
-            if (!properties.Any())
-                return;
-
             var propertiesKeys = properties.Keys;
 
-            foreach (var property in instance.GetType().GetProperties().Where(p => p.CanWrite &&
-                                                                             (p.PropertyType.IsPrimitive || p.PropertyType == typeof(string)) ||
-                                                                             (p.PropertyType.IsNullableOfAnyPrimitiveType())))
+            foreach (var property in instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                                       .Where(p => p.CanWrite &&
+                                                                  (p.PropertyType.IsPrimitive || p.PropertyType == typeof(string)) ||
+                                                                   p.PropertyType.IsNullableOfAnyPrimitiveType()))
             {
                 var key = ExtractKey(property, propertiesKeys);
                 
@@ -87,20 +90,6 @@ namespace CSharpProperties.DependencyInjection
             return key;
         }
 
-        private static IProperties LoadPropertiesFromFile(string path)
-        {
-            if (path.EndsWith(".json"))
-                return Properties.LoadFromJson(path);
-
-            if (path.EndsWith(".xml"))
-                return Properties.LoadFromXml(path);
-
-            if (path.EndsWith(".csv"))
-                return Properties.LoadFromCsv(path);
-
-            return Properties.Load(path);
-        }
-    
         private static void SetPropertyValueFromString(object target, PropertyInfo property, string value)
         {
             if  (property.PropertyType == typeof(string))
@@ -115,7 +104,7 @@ namespace CSharpProperties.DependencyInjection
             {
                 if (IsNullOrEmpty(value))
                 {
-                    property.SetValue(target, null, null);
+                    property.SetValue(target, null);
                     return;
                 }
 
@@ -123,7 +112,78 @@ namespace CSharpProperties.DependencyInjection
             }
 
             var convertedValue = Convert.ChangeType(value, propertyType);
-            property.SetValue(target, convertedValue, null);
+            property.SetValue(target, convertedValue);
+        }
+
+        private static void LoadFields(object instance, IProperties properties)
+        {
+            var propertiesKeys = properties.Keys;
+
+            foreach (var field in instance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                                    .Where(f => (f.FieldType.IsPrimitive || f.FieldType == typeof(string)) || f.FieldType.IsNullableOfAnyPrimitiveType()))
+            {
+                var key = ExtractKey(field, propertiesKeys);
+                
+                if (key is null)
+                    continue;
+
+                var value = properties[key];
+                SetFieldValueFromString(instance, field, value);
+            }
+        }
+
+        private static string ExtractKey(FieldInfo field, IEnumerable<string> propertiesKeys)
+        {
+            var keyName = field.IsDefined(typeof(PropertiesKeyAttribute), false)
+                            ? field.GetCustomAttributes(false)
+                                      .Where(a => a is PropertiesKeyAttribute)
+                                      .Cast<PropertiesKeyAttribute>()
+                                      .Select(a => a.Key)
+                                      .FirstOrDefault()
+                            : field.Name;
+
+            var key = propertiesKeys.FirstOrDefault(k => k.Equals(keyName, StringComparison.InvariantCultureIgnoreCase));
+
+            return key;
+        }
+
+        private static void SetFieldValueFromString(object target, FieldInfo field, string value)
+        {
+            if  (field.FieldType == typeof(string))
+            {
+                field.SetValue(target, value);
+                return;
+            }
+
+            var fieldType = field.FieldType;
+
+            if (fieldType.IsNullable())
+            {
+                if (IsNullOrEmpty(value))
+                {
+                    field.SetValue(target, null);
+                    return;
+                }
+
+                fieldType = new NullableConverter(field.FieldType).UnderlyingType;
+            }
+
+            var convertedValue = Convert.ChangeType(value, fieldType);
+            field.SetValue(target, convertedValue);
+        }
+
+        private static IProperties LoadPropertiesFromFile(string path)
+        {
+            if (path.EndsWith(".json"))
+                return Properties.LoadFromJson(path);
+
+            if (path.EndsWith(".xml"))
+                return Properties.LoadFromXml(path);
+
+            if (path.EndsWith(".csv"))
+                return Properties.LoadFromCsv(path);
+
+            return Properties.Load(path);
         }
     }
 }

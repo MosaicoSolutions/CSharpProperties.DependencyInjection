@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<properties>
+    <property key='app-name' value='CSharpProperties.DependencyInjection'/>
+    <property key='app-version' value='1.0.0'/>
+    <property key='author' value='Bruno Xavier'/>
+</properties>
