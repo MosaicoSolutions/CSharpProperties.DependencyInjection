@@ -33,7 +33,7 @@ namespace CSharpProperties.DependencyInjection.Test
                         options.SerializerSettings.Formatting = Formatting.Indented;
                     });;
                     
-            services.AddPropertiesFiles();
+            services.AddPropertiesFiles(baseDirectory: @".\properties-files");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

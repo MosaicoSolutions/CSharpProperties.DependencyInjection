@@ -2,7 +2,7 @@ using CSharpProperties.DependencyInjection.Annotations;
 
 namespace CSharpProperties.DependencyInjection.Test.ViewModels
 {
-    [PropertiesFile(Path = @".\properties-files\using-fields.xml")]
+    [PropertiesFile(Path = @"\using-fields.xml")]
     public class UsingFieldsViewModel
     {
         [PropertiesKey(Key = "app-name")]

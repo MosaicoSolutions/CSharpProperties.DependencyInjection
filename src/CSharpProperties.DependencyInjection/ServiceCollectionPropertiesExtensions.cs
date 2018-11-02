@@ -9,14 +9,17 @@ using CSharpProperties.DependencyInjection.Annotations;
 using CSharpProperties.DependencyInjection.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MosaicoSolutions.CSharpProperties;
-using static System.String;
 
 namespace CSharpProperties.DependencyInjection
 {
     public static class ServiceCollectionPropertiesExtensions
     {
-        public static IServiceCollection AddPropertiesFiles(this IServiceCollection services)
+        private static string BaseDirectory { get; set; }
+
+        public static IServiceCollection AddPropertiesFiles(this IServiceCollection services, string baseDirectory = null)
         {
+            BaseDirectory = baseDirectory;
+
             var allTypes = AppDomain.CurrentDomain
                                     .GetAssemblies()
                                     .SelectMany(a => a.GetTypes()
@@ -37,15 +40,17 @@ namespace CSharpProperties.DependencyInjection
                 var instance = newInstance();
 
                 var propertiesFileAttribute = instance.GetType()
-                                        .GetCustomAttributes(false)
-                                        .Where(a => a is PropertiesFileAttribute)
-                                        .Cast<PropertiesFileAttribute>()
-                                        .FirstOrDefault();
+                                                    .GetCustomAttributes(false)
+                                                    .Where(a => a is PropertiesFileAttribute)
+                                                    .Cast<PropertiesFileAttribute>()
+                                                    .FirstOrDefault();
 
-                if (!File.Exists(propertiesFileAttribute.Path))
-                    throw new FileNotFoundException("Properties File not found.", propertiesFileAttribute.Path);
+                var finalPath = $@"{BaseDirectory ?? string.Empty}\{propertiesFileAttribute.Path}";
 
-                var properties = LoadPropertiesFromFile(propertiesFileAttribute.Path);
+                if (!File.Exists(finalPath))
+                    throw new FileNotFoundException("Properties File not found.", finalPath);
+
+                var properties = LoadPropertiesFromFile(finalPath);
 
                 if (!properties.Any())
                     return instance;
@@ -102,7 +107,7 @@ namespace CSharpProperties.DependencyInjection
 
             if (propertyType.IsNullable())
             {
-                if (IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     property.SetValue(target, null);
                     return;
@@ -159,7 +164,7 @@ namespace CSharpProperties.DependencyInjection
 
             if (fieldType.IsNullable())
             {
-                if (IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     field.SetValue(target, null);
                     return;
