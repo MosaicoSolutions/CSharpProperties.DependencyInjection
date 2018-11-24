@@ -7,8 +7,10 @@ namespace CSharpProperties.DependencyInjection.Test.ViewModels
     {
         [PropertiesKey(Key = "app-name")]
         private string appName;
+
         [PropertiesKey(Key = "app-version")]
         private string appVersion;
+        
         private string author;
 
         public string AppName => appName;

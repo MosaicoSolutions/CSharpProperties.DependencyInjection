@@ -40,10 +40,9 @@ namespace CSharpProperties.DependencyInjection
                 var instance = newInstance();
 
                 var propertiesFileAttribute = instance.GetType()
-                                                    .GetCustomAttributes(false)
-                                                    .Where(a => a is PropertiesFileAttribute)
-                                                    .Cast<PropertiesFileAttribute>()
-                                                    .FirstOrDefault();
+                                                      .GetCustomAttributes(false)
+                                                      .OfType<PropertiesFileAttribute>()
+                                                      .FirstOrDefault();
 
                 var finalPath = $@"{BaseDirectory ?? string.Empty}\{propertiesFileAttribute.Path}";
 
@@ -84,8 +83,7 @@ namespace CSharpProperties.DependencyInjection
         {
             var keyName = property.IsDefined(typeof(PropertiesKeyAttribute), false)
                             ? property.GetCustomAttributes(false)
-                                      .Where(a => a is PropertiesKeyAttribute)
-                                      .Cast<PropertiesKeyAttribute>()
+                                      .OfType<PropertiesKeyAttribute>()
                                       .Select(a => a.Key)
                                       .FirstOrDefault()
                             : property.Name;
@@ -141,10 +139,9 @@ namespace CSharpProperties.DependencyInjection
         {
             var keyName = field.IsDefined(typeof(PropertiesKeyAttribute), false)
                             ? field.GetCustomAttributes(false)
-                                      .Where(a => a is PropertiesKeyAttribute)
-                                      .Cast<PropertiesKeyAttribute>()
-                                      .Select(a => a.Key)
-                                      .FirstOrDefault()
+                                   .OfType<PropertiesKeyAttribute>()
+                                   .Select(a => a.Key)
+                                   .FirstOrDefault()
                             : field.Name;
 
             var key = propertiesKeys.FirstOrDefault(k => k.Equals(keyName, StringComparison.InvariantCultureIgnoreCase));
